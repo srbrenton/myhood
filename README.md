@@ -5,7 +5,7 @@ Instructions for use and Interaction
 
 * Open index.html in the myhood directory
 * Six locations are identified
-* Six markers are placed using the Geocoder API to set each location from its address
+* Six markers are placed with DROP animation using the Geocoder API to set each location from its address
 * Each marker has a click handler to toggle the marker bounce animation
 * Each marker has a title which displays the address when the mouse hovers over the marker
 * The name of each location is displayed in a list

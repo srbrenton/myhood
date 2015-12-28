@@ -73,14 +73,14 @@ initMap = function() {
 
 	myGeocoder = new google.maps.Geocoder();
 
-	drop();
+	dropMarkers();
 
 	// wait until markers have dropped
 	setTimeout(addListeners, 800);
 
 }
 
-function drop() {
+function dropMarkers() {
 	clearMarkers();
 	for ( var i in myLocations() ) {
 		addMarker(myLocations()[i]);
