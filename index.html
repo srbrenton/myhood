@@ -1,0 +1,157 @@
+<html>
+
+<head>
+<title>my seach box</title>
+
+<style type="text/css">
+	html, body { height: 100%; margin: 0; padding: 0; }
+	#map { height: 100%; }
+	.hl { color:blue;background:pink; }
+
+</style>
+
+</head>
+
+<body>
+
+<div>
+	<input>
+	</input>
+</div>
+
+<!--http://stackoverflow.com/questions/9417467/knockout-js-event-binding-unexpected-behavior-with-mouseover-and-mouseout-even-->
+
+<div>
+	<ul id="loclist">
+	</ul>
+</div>
+
+<div id="map">
+</div>
+
+<script src="jQuery.js"></script>
+<script src="knockout-3.2.0.js"></script>
+
+<script async defer
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5v06GI00VMZ07wHzXYTJdJKOy6HGM07Q&callback=initMap&libraries=places">
+</script>
+
+<script>
+
+var myLocations = ko.observableArray([
+	{ name: 'Falmouth', addr: '2190 falmouth anaheim', marker: null, select: false, info: false, bounce: false },
+	{ name: 'Chanticleer', addr: '8602 chanticleer stanton', marker: null, select: false, info: false, bounce: false },
+	{ name: 'Lola', addr: '8891 lola anaheim', marker: null, select: false, info: false, bounce: false },
+	{ name: 'Ball', addr: '2011 w ball rd anaheim', marker: null, select: false, info: false, bounce: false },
+	{ name: 'Crone', addr: '1842 w crone rd anaheim', marker: null, select: false, info: false, bounce: false },
+	{ name: 'Tiara', addr: '1639 s tiara way anaheim', marker: null, select: false, info: false, bounce: false }
+]);
+
+var myMap;
+var myGeocoder;
+
+function MyVM() {
+
+var self = this;
+
+// span ids are li0, li2, li3, li4, etc. to tie to this unique list
+
+for ( var index in myLocations() ) {
+	$('#loclist').append('<li>'+ 
+	'<span id="li' + index + '" data-bind="event: { mouseover: highLightOn, mouseout: highLightOff}" >'+
+	myLocations()[index].name+'</span></li>');
+}
+
+
+initMap = function() {
+
+	myMap = new google.maps.Map(document.getElementById('map'), {
+		zoom: 13,
+		center: {lat: 33.83286, lng: -117.9587}
+		}
+	);
+
+	myGeocoder = new google.maps.Geocoder();
+
+	drop();
+
+	// wait until markers have dropped
+	setTimeout(addListeners, 800);
+
+}
+
+function drop() {
+	clearMarkers();
+	for ( var i in myLocations() ) {
+		addMarker(myLocations()[i]);
+	}
+}
+
+function clearMarkers() {
+	for ( var i in myLocations() ) {
+		if ( myLocations()[i].marker !== null ) {
+			myLocations()[i].marker = null;
+		}
+	}
+}
+
+function addMarker(location) {
+	myGeocoder.geocode({'address': location.addr},(function(loc){return function(results, status) {
+		if (status === google.maps.GeocoderStatus.OK) {
+			loc.marker = new google.maps.Marker({
+				map: myMap,
+				title: results[0].formatted_address,
+				position: results[0].geometry.location,
+				animation: google.maps.Animation.DROP
+			})
+		}
+		else {
+//			alert(status);
+		}
+	}})(location));
+}
+
+function addListeners() {
+	for ( var i in myLocations() ) {
+		myLocations()[i].marker.addListener('click',(function(j){return function(){toggleBounce(j)}})(i));
+	}
+}
+
+function toggleBounce(i) {
+	if (myLocations()[i].marker.getAnimation() !== null) {
+		myLocations()[i].marker.setAnimation(null);
+	} else {
+		myLocations()[i].marker.setAnimation(google.maps.Animation.BOUNCE);
+	}
+}
+
+
+self.highLightOn = function() {
+	// grab numeric part of span id
+	var myIndex =  (event.target.id.match(/li(\d)/))[1];
+	$(event.target).addClass('hl');
+	toggleBounce(myIndex);
+}
+
+
+self.highLightOff = function() {
+	// grab numeric part of span id
+	var myIndex =  (event.target.id.match(/li(\d)/))[1];
+	$(event.target).removeClass('hl');
+	toggleBounce(myIndex);
+}
+
+
+for ( index in myLocations() ) {
+//	console.log(myLocations()[index].name);
+	console.log(myLocations()[index].addr);
+}
+
+
+}
+
+ko.applyBindings(new MyVM());
+
+</script>
+</body>
+</html>
