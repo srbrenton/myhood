@@ -1,0 +1,81 @@
+<html>
+<head>
+<title>my knockout box</title>
+</head>
+
+<body>
+
+
+<script src="jQuery.js"></script>
+<script src="bootstrap.min.js"></script>
+<script src="knockout-3.2.0.js"></script>
+
+<script>
+
+// AppViewModel() is a function object created on the call to ko.applyBindings()
+
+var streets = [
+	'Falmouth', 'Chanticleer', 'Lola', 'Ball', 'Crone', 'Tiara'
+];
+
+var myLocations = [
+        { name: 'Falmouth', addr: '2190 falmouth anaheim', marker: null, select: false, info: false, bounce: false },
+        { name: 'Chanticleer', addr: '8602 chanticleer stanton', marker: null, select: false, info: false, bounce: false },
+        { name: 'Lola', addr: '8891 lola anaheim', marker: null, select: false, info: false, bounce: false },
+        { name: 'Ball', addr: '2011 w ball rd anaheim', marker: null, select: false, info: false, bounce: false },
+        { name: 'Crone', addr: '1842 w crone rd anaheim', marker: null, select: false, info: false, bounce: false },
+        { name: 'Tiara', addr: '1639 s tiara way anaheim', marker: null, select: false, info: false, bounce: false }
+];
+
+function AppViewModel() {
+
+	var self = this;
+
+	self.mapLocations = ko.observableArray(myLocations);
+
+	self.searchBox = ko.observable("filler");
+	self.eventBox = ko.observable("filler");
+
+	self.keyHandler = function(data, event) {
+		console.log(event.keyCode);
+		console.log(String.fromCharCode(event.keyCode));
+
+	}
+
+}
+
+ko.applyBindings(new AppViewModel());
+
+</script>
+<script data-proofer-ignore type="text/html" id="myLocations">
+<li>
+<strong data-bind="text: name"></strong> -
+<span data-bind="text:addr"></span>
+</li>
+</script>
+
+
+<hr>
+<p> Result Box: <span data-bind="text: searchBox" >filler</span></p>
+<hr>
+<p> Search Box: <input data-bind="textInput: searchBox"> </p>
+<hr>
+<p> Input Box: <input data-bind="event: { keydown: keyHandler }"> </p>
+<hr>
+<ul data-bind="template: {name: 'myLocations', foreach: mapLocations}"></ul>
+
+</body>
+</html>
+
+<!--
+
+input characters immediately update the searchBox string
+
+change matched part of string to bold
+
+
+
+
+-->
+
+
