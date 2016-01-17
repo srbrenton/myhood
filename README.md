@@ -27,3 +27,8 @@ Questions
 * I think the event I'm feeding jQuery in highLightOn and highLightOn handlers is from the global(?) context
 * What can I read to better understand the two ways I've declared functions in the view model
 
+References
+----------
+* Searching [Live Search Example](http://opensoul.org/2011/06/23/live-search-with-knockoutjs/)
+* Events [Catching Mouse Events](http://stackoverflow.com/questions/9417467/knockout-js-event-binding-unexpected-behavior-with-mouseover-and-mouseout-even)
+* Books [Javascript Bible 6th Edition](http://www.wiley.com/WileyCDA/WileyTitle/productCd-0470069163.html)
