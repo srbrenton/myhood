@@ -21,6 +21,7 @@
 <ul data-bind="foreach: mapLocations">
 	<li data-bind="visible: info()">
 	<span data-bind="
+		css: { hl: select() },
 		text: name,
 		event: { mouseover: $parent.highLightOn, mouseout: $parent.highLightOff, click: $parent.listClick }
 	" ></span>
@@ -70,8 +71,8 @@ var mapLocations = ko.observableArray([
 
 function AppViewModel() {
 
-//	self.searchBox = ko.observable("filler");
-//	self.eventBox = ko.observable("filler");
+//	self.searchBox = ko.observable("bull shit");
+//	self.eventBox = ko.observable("bull shit");
 
 //	self.keyHandler = function(data, event) {
 //		console.log(event.keyCode);
@@ -79,20 +80,23 @@ function AppViewModel() {
 //
 //	}
 
+// toggle with: mapLocations()[0].info(true)
 	this.listClick = function(data) {
 		console.log('click for: ' + data.addr);
 		console.log(data);
 		data.info(false);
 	}
 	this.highLightOn = function(data) {
-		data.select = true;
-		$(event.target).addClass('hl');
+		data.select(true);
+//		data.select = true;
+//		$(event.target).addClass('hl');
 //		console.log(data);
 //		console.log(event);
 	}
 	this.highLightOff = function(data) {
-		data.select = false;
-		$(event.target).removeClass('hl');
+		data.select(false);
+//		data.select = false;
+//		$(event.target).removeClass('hl');
 //		console.log(data);
 //		console.log(event);
 	}
@@ -114,7 +118,7 @@ ko.applyBindings(new AppViewModel());
 </script>
 
 <hr>
-<p> Result Box: <span data-bind="text: searchBox" >filler</span></p>
+<p> Result Box: <span data-bind="text: searchBox" >bull shit</span></p>
 <hr>
 <p> Search Box: <input data-bind="textInput: searchBox"> </p>
 <hr>
