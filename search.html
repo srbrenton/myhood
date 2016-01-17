@@ -1,10 +1,37 @@
 <html>
 <head>
-<title>my knockout box</title>
+<title>my foreach box</title>
+
+<style type="text/css">
+        html, body { height: 100%; margin: 0; padding: 0; }
+        /* Responsive Web Design Fundamentals */
+        img, embed, object, video { max-width: 100%; }
+        #map { height: 100%; }
+        .hl { color:blue;background:pink; }
+
+</style>
+
 </head>
 
 <body>
 
+<div>
+<hr>
+
+<ul data-bind="foreach: mapLocations">
+	<li data-bind="visible: info()">
+	<span data-bind="
+		text: name,
+		event: { mouseover: $parent.highLightOn, mouseout: $parent.highLightOff, click: $parent.listClick }
+	" ></span>
+	</li>
+</ul>
+<hr>
+</div>
+
+<!--
+	<span data-bind="text: name, event: { mouseover: $parent.highLightOn, mouseout: $parent.highLightOff}" ></span>
+-->
 
 <script src="jQuery.js"></script>
 <script src="bootstrap.min.js"></script>
@@ -13,10 +40,6 @@
 <script>
 
 // AppViewModel() is a function object created on the call to ko.applyBindings()
-
-var streets = [
-	'Falmouth', 'Chanticleer', 'Lola', 'Ball', 'Crone', 'Tiara'
-];
 
 var myLocations = [
         { name: 'Falmouth', addr: '2190 falmouth anaheim', marker: null, select: false, info: false, bounce: false },
@@ -27,33 +50,68 @@ var myLocations = [
         { name: 'Tiara', addr: '1639 s tiara way anaheim', marker: null, select: false, info: false, bounce: false }
 ];
 
+function MapMarker(locInfo) {
+	var self = this;
+	self.name = locInfo.name;
+	self.addr = locInfo.addr;
+	self.marker = null;
+	self.select = ko.observable(false);
+	self.info = ko.observable(true);
+}
+
+var mapLocations = ko.observableArray([
+	new MapMarker(myLocations[0]),
+	new MapMarker(myLocations[1]),
+	new MapMarker(myLocations[2]),
+	new MapMarker(myLocations[3]),
+	new MapMarker(myLocations[4]),
+	new MapMarker(myLocations[5])
+]);
+
 function AppViewModel() {
 
-	var self = this;
+//	self.searchBox = ko.observable("filler");
+//	self.eventBox = ko.observable("filler");
 
-	self.mapLocations = ko.observableArray(myLocations);
+//	self.keyHandler = function(data, event) {
+//		console.log(event.keyCode);
+//		console.log(String.fromCharCode(event.keyCode));
+//
+//	}
 
-	self.searchBox = ko.observable("filler");
-	self.eventBox = ko.observable("filler");
-
-	self.keyHandler = function(data, event) {
-		console.log(event.keyCode);
-		console.log(String.fromCharCode(event.keyCode));
-
+	this.listClick = function(data) {
+		console.log('click for: ' + data.addr);
+		console.log(data);
+		data.info(false);
 	}
-
+	this.highLightOn = function(data) {
+		data.select = true;
+		$(event.target).addClass('hl');
+//		console.log(data);
+//		console.log(event);
+	}
+	this.highLightOff = function(data) {
+		data.select = false;
+		$(event.target).removeClass('hl');
+//		console.log(data);
+//		console.log(event);
+	}
 }
 
 ko.applyBindings(new AppViewModel());
 
+
 </script>
+</body>
+</html>
+
+<!--
 <script data-proofer-ignore type="text/html" id="myLocations">
 <li>
 <strong data-bind="text: name"></strong> -
 <span data-bind="text:addr"></span>
 </li>
 </script>
-
 
 <hr>
 <p> Result Box: <span data-bind="text: searchBox" >filler</span></p>
@@ -64,18 +122,14 @@ ko.applyBindings(new AppViewModel());
 <hr>
 <ul data-bind="template: {name: 'myLocations', foreach: mapLocations}"></ul>
 
-</body>
-</html>
 
-<!--
 
 input characters immediately update the searchBox string
 
 change matched part of string to bold
 
 
-
-
 -->
+
 
 
