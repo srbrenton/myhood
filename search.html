@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>my foreach box</title>
+<title>my foreach (2)  box</title>
 
 <style type="text/css">
         html, body { height: 100%; margin: 0; padding: 0; }
@@ -10,29 +10,27 @@
         .hl { color:blue;background:pink; }
 
 </style>
-
 </head>
 
 <body>
 
 <div>
-<hr>
+<!-- inspired by http://opensoul.org/2011/06/23/live-search-with-knockoutjs/ -->
+<form action="#">
+<input placeholder="Where I lived ..." type="search" name="q" data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off">
+</form>
+</div>
 
+<div>
 <ul data-bind="foreach: mapLocations">
-	<li data-bind="visible: info()">
+	<li data-bind="visible: visible()">
 	<span data-bind="
 		css: { hl: select() },
 		text: name,
 		event: { mouseover: $parent.highLightOn, mouseout: $parent.highLightOff, click: $parent.listClick }
-	" ></span>
-	</li>
+	" ></span></li>
 </ul>
-<hr>
 </div>
-
-<!--
-	<span data-bind="text: name, event: { mouseover: $parent.highLightOn, mouseout: $parent.highLightOff}" ></span>
--->
 
 <script src="jQuery.js"></script>
 <script src="bootstrap.min.js"></script>
@@ -43,12 +41,12 @@
 // AppViewModel() is a function object created on the call to ko.applyBindings()
 
 var myLocations = [
-        { name: 'Falmouth', addr: '2190 falmouth anaheim', marker: null, select: false, info: false, bounce: false },
-        { name: 'Chanticleer', addr: '8602 chanticleer stanton', marker: null, select: false, info: false, bounce: false },
-        { name: 'Lola', addr: '8891 lola anaheim', marker: null, select: false, info: false, bounce: false },
-        { name: 'Ball', addr: '2011 w ball rd anaheim', marker: null, select: false, info: false, bounce: false },
-        { name: 'Crone', addr: '1842 w crone rd anaheim', marker: null, select: false, info: false, bounce: false },
-        { name: 'Tiara', addr: '1639 s tiara way anaheim', marker: null, select: false, info: false, bounce: false }
+        { name: 'Falmouth', addr: '2190 falmouth anaheim'},
+        { name: 'Chanticleer', addr: '8602 chanticleer stanton'},
+        { name: 'Lola', addr: '8891 lola anaheim'},
+        { name: 'Ball', addr: '2011 w ball rd anaheim'},
+        { name: 'Crone', addr: '1842 w crone rd anaheim'},
+        { name: 'Tiara', addr: '1639 s tiara way anaheim'}
 ];
 
 function MapMarker(locInfo) {
@@ -57,7 +55,8 @@ function MapMarker(locInfo) {
 	self.addr = locInfo.addr;
 	self.marker = null;
 	self.select = ko.observable(false);
-	self.info = ko.observable(true);
+	self.visible = ko.observable(true);
+	self.bounce = ko.observable(false);
 }
 
 var mapLocations = ko.observableArray([
@@ -71,35 +70,43 @@ var mapLocations = ko.observableArray([
 
 function AppViewModel() {
 
-//	self.searchBox = ko.observable("bull shit");
-//	self.eventBox = ko.observable("bull shit");
+	var self = this;
+	var regex = new RegExp();
 
-//	self.keyHandler = function(data, event) {
-//		console.log(event.keyCode);
-//		console.log(String.fromCharCode(event.keyCode));
-//
-//	}
+	self.query = ko.observable('');
 
-// toggle with: mapLocations()[0].info(true)
+	self.search = function(value) {
+//		console.log(mapLocations());
+		// create a regex with the value in the search box
+		regex.compile(value, 'i');
+		// check each name in mapLocations for a match
+		for (  var i in mapLocations() ) {
+			if ( regex.test(mapLocations()[i].name) ) {
+				mapLocations()[i].visible(true);
+			}
+			else {
+				mapLocations()[i].visible(false);
+			}
+		}
+	}
+
+	self.query.subscribe(self.search);
+
+	// toggle with: mapLocations()[0].visible(true)
 	this.listClick = function(data) {
 		console.log('click for: ' + data.addr);
-		console.log(data);
-		data.info(false);
+//		console.log(data);
+//		data.visible(false);
 	}
+
 	this.highLightOn = function(data) {
 		data.select(true);
-//		data.select = true;
-//		$(event.target).addClass('hl');
-//		console.log(data);
-//		console.log(event);
 	}
+
 	this.highLightOff = function(data) {
 		data.select(false);
-//		data.select = false;
-//		$(event.target).removeClass('hl');
-//		console.log(data);
-//		console.log(event);
 	}
+
 }
 
 ko.applyBindings(new AppViewModel());
@@ -108,32 +115,4 @@ ko.applyBindings(new AppViewModel());
 </script>
 </body>
 </html>
-
-<!--
-<script data-proofer-ignore type="text/html" id="myLocations">
-<li>
-<strong data-bind="text: name"></strong> -
-<span data-bind="text:addr"></span>
-</li>
-</script>
-
-<hr>
-<p> Result Box: <span data-bind="text: searchBox" >bull shit</span></p>
-<hr>
-<p> Search Box: <input data-bind="textInput: searchBox"> </p>
-<hr>
-<p> Input Box: <input data-bind="event: { keydown: keyHandler }"> </p>
-<hr>
-<ul data-bind="template: {name: 'myLocations', foreach: mapLocations}"></ul>
-
-
-
-input characters immediately update the searchBox string
-
-change matched part of string to bold
-
-
--->
-
-
 
