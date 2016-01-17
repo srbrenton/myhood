@@ -1,10 +1,17 @@
 <html>
 
 <head>
+
+<!--Responsive Web Design Fundamentals-->
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
 <title>my seach box</title>
 
+<link rel="stylesheet" type="text/css" href="bootstrap.min.css">
 <style type="text/css">
 	html, body { height: 100%; margin: 0; padding: 0; }
+	/* Responsive Web Design Fundamentals */
+	img, embed, object, video { max-width: 100%; }
 	#map { height: 100%; }
 	.hl { color:blue;background:pink; }
 
@@ -13,23 +20,32 @@
 </head>
 
 <body>
+<div class="container">
+<div class="row">
 
-<div>
+<div id="search" class="col-md-4 col-sm-4">
 	<input>
 	</input>
 </div>
 
 <!--http://stackoverflow.com/questions/9417467/knockout-js-event-binding-unexpected-behavior-with-mouseover-and-mouseout-even-->
 
-<div>
-	<ul id="loclist">
+<div class="col-md-8 col-sm-8">
+	<ul id="loclist" class="nav nav-tabs">
 	</ul>
 </div>
 
+<div class="row">
+<div class=col-md-12>
 <div id="map">
+</div>
+</div>
+</div>
+</div>
 </div>
 
 <script src="jQuery.js"></script>
+<script src="bootstrap.min.js"></script>
 <script src="knockout-3.2.0.js"></script>
 
 <script async defer
@@ -37,6 +53,14 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5v06GI00VMZ07wHzXYTJdJKO
 </script>
 
 <script>
+var contentStrings = [
+	'Attending 2nd grade at John Marshall Elementary School',
+	'Attending 3rd grade at Robert M. Pyles Elementary School',
+	'Attending 5th grade at Robert M. Pyles Elementary School',
+	'Attending 8th grade at Trident Junior High School',
+	'Attending 12th grade at Loara High School',
+	'Freshman at CSUF'
+];
 
 var myLocations = ko.observableArray([
 	{ name: 'Falmouth', addr: '2190 falmouth anaheim', marker: null, select: false, info: false, bounce: false },
@@ -57,7 +81,7 @@ var self = this;
 // span ids are li0, li2, li3, li4, etc. to tie to this unique list
 
 for ( var index in myLocations() ) {
-	$('#loclist').append('<li>'+ 
+	$('#loclist').append('<li class="btn">'+ 
 	'<span id="li' + index + '" data-bind="event: { mouseover: highLightOn, mouseout: highLightOff}" >'+
 	myLocations()[index].name+'</span></li>');
 }
@@ -73,14 +97,21 @@ initMap = function() {
 
 	myGeocoder = new google.maps.Geocoder();
 
-	dropMarkers();
+	drop();
 
 	// wait until markers have dropped
 	setTimeout(addListeners, 800);
 
+	// add some info windows
+//	var infowindow = new google.maps.InfoWindow({content: contentStrings[0]});
+//	myLocations()[0].marker.addListener('click', function() {infowindow.open(myMap, myLocations()[0].marker);});
+//	console.log(myLocations()[0].marker);
+
+
+
 }
 
-function dropMarkers() {
+function drop() {
 	clearMarkers();
 	for ( var i in myLocations() ) {
 		addMarker(myLocations()[i]);
@@ -112,9 +143,14 @@ function addMarker(location) {
 }
 
 function addListeners() {
+	var infowindow;
 	for ( var i in myLocations() ) {
-		myLocations()[i].marker.addListener('click',(function(j){return function(){toggleBounce(j)}})(i));
+//		infowindow = new google.maps.InfoWindow({content: contentStrings[i]});
+//		infowindow = new google.maps.InfoWindow(function(j){return {content: contentStrings[j]}}(i));
+myLocations()[i].marker.addListener('click', (function(j){return function(){toggleBounce(j)}})(i));
+//myLocations()[i].marker.addListener('click', (function(j){return function(){infowindow.open(myMap, myLocations()[j].marker)}})(i));
 	}
+//	console.log(myLocations()[0].marker);
 }
 
 function toggleBounce(i) {
@@ -140,7 +176,6 @@ self.highLightOff = function() {
 	$(event.target).removeClass('hl');
 	toggleBounce(myIndex);
 }
-
 
 for ( index in myLocations() ) {
 //	console.log(myLocations()[index].name);
