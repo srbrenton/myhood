@@ -5,15 +5,17 @@
 <!--Responsive Web Design Fundamentals-->
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>my seach box</title>
+<title>The Hood</title>
 
 <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 <style type="text/css">
+
 	html, body { height: 100%; margin: 0; padding: 0; }
 	/* Responsive Web Design Fundamentals */
 	img, embed, object, video { max-width: 100%; }
 	#map { height: 100%; }
 	.hl { color:blue;background:pink; }
+	.search { padding: 15px }
 
 </style>
 
@@ -23,16 +25,23 @@
 <div class="container">
 <div class="row">
 
-<div id="search" class="col-md-4 col-sm-4">
-	<input>
-	</input>
+<!-- inspired by http://opensoul.org/2011/06/23/live-search-with-knockoutjs/ -->
+<div class="col-md-4 col-sm-4 search">
+<form action="#">
+<input placeholder="Where I lived ..." type="search" name="q" data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off">
+</form>
+
 </div>
 
-<!--http://stackoverflow.com/questions/9417467/knockout-js-event-binding-unexpected-behavior-with-mouseover-and-mouseout-even-->
-
-<div class="col-md-8 col-sm-8">
-	<ul id="loclist" class="nav nav-tabs">
-	</ul>
+<div class="col-md-8 col-sm-8 search">
+<ul data-bind="foreach: mapLocations">
+	<li data-bind="visible: visible()">
+	<span data-bind="
+		css: { hl: select() },
+		text: name,
+		event: { mouseover: $parent.highLightOn, mouseout: $parent.highLightOff, click: $parent.listClick }
+	" ></span></li>
+</ul>
 </div>
 
 <div class="row">
@@ -62,13 +71,32 @@ var contentStrings = [
 	'Freshman at CSUF'
 ];
 
-var myLocations = ko.observableArray([
-	{ name: 'Falmouth', addr: '2190 falmouth anaheim', marker: null, select: false, info: false, bounce: false },
-	{ name: 'Chanticleer', addr: '8602 chanticleer stanton', marker: null, select: false, info: false, bounce: false },
-	{ name: 'Lola', addr: '8891 lola anaheim', marker: null, select: false, info: false, bounce: false },
-	{ name: 'Ball', addr: '2011 w ball rd anaheim', marker: null, select: false, info: false, bounce: false },
-	{ name: 'Crone', addr: '1842 w crone rd anaheim', marker: null, select: false, info: false, bounce: false },
-	{ name: 'Tiara', addr: '1639 s tiara way anaheim', marker: null, select: false, info: false, bounce: false }
+var myLocations = [
+	{ name: 'Falmouth', addr: '2190 falmouth anaheim'},
+	{ name: 'Chanticleer', addr: '8602 chanticleer stanton'},
+	{ name: 'Lola', addr: '8891 lola anaheim'},
+	{ name: 'Ball', addr: '2011 w ball rd anaheim'},
+	{ name: 'Crone', addr: '1842 w crone rd anaheim'},
+	{ name: 'Tiara', addr: '1639 s tiara way anaheim'}
+];
+
+function MapMarker(locInfo) {
+	var self = this;
+	self.name = locInfo.name;
+	self.addr = locInfo.addr;
+	self.marker = null;
+	self.select = ko.observable(false);
+	self.visible = ko.observable(true);
+	self.bounce = ko.observable(false);
+}
+
+var mapLocations = ko.observableArray([
+	new MapMarker(myLocations[0]),
+	new MapMarker(myLocations[1]),
+	new MapMarker(myLocations[2]),
+	new MapMarker(myLocations[3]),
+	new MapMarker(myLocations[4]),
+	new MapMarker(myLocations[5])
 ]);
 
 var myMap;
@@ -77,15 +105,26 @@ var myGeocoder;
 function MyVM() {
 
 var self = this;
+var regex = new RegExp();
 
-// span ids are li0, li2, li3, li4, etc. to tie to this unique list
+        self.query = ko.observable('');
 
-for ( var index in myLocations() ) {
-	$('#loclist').append('<li class="btn">'+ 
-	'<span id="li' + index + '" data-bind="event: { mouseover: highLightOn, mouseout: highLightOff}" >'+
-	myLocations()[index].name+'</span></li>');
-}
+        self.search = function(value) {
+//              console.log(mapLocations());
+                // create a regex with the value in the search box
+                regex.compile(value, 'i');
+                // check each name in mapLocations for a match
+                for (  var i in mapLocations() ) {
+                        if ( regex.test(mapLocations()[i].name) ) {
+                                mapLocations()[i].visible(true);
+                        }
+                        else {
+                                mapLocations()[i].visible(false);
+                        }
+                }
+        }
 
+        self.query.subscribe(self.search);
 
 initMap = function() {
 
@@ -113,15 +152,15 @@ initMap = function() {
 
 function drop() {
 	clearMarkers();
-	for ( var i in myLocations() ) {
-		addMarker(myLocations()[i]);
+	for ( var i in mapLocations() ) {
+		addMarker(mapLocations()[i]);
 	}
 }
 
 function clearMarkers() {
-	for ( var i in myLocations() ) {
-		if ( myLocations()[i].marker !== null ) {
-			myLocations()[i].marker = null;
+	for ( var i in mapLocations() ) {
+		if ( mapLocations()[i].marker !== null ) {
+			mapLocations()[i].marker = null;
 		}
 	}
 }
@@ -144,42 +183,57 @@ function addMarker(location) {
 
 function addListeners() {
 	var infowindow;
-	for ( var i in myLocations() ) {
+	for ( var i in mapLocations() ) {
 //		infowindow = new google.maps.InfoWindow({content: contentStrings[i]});
 //		infowindow = new google.maps.InfoWindow(function(j){return {content: contentStrings[j]}}(i));
-myLocations()[i].marker.addListener('click', (function(j){return function(){toggleBounce(j)}})(i));
+mapLocations()[i].marker.addListener('click', (function(j){return function(){toggleBounce(j)}})(i));
 //myLocations()[i].marker.addListener('click', (function(j){return function(){infowindow.open(myMap, myLocations()[j].marker)}})(i));
 	}
 //	console.log(myLocations()[0].marker);
 }
 
 function toggleBounce(i) {
-	if (myLocations()[i].marker.getAnimation() !== null) {
-		myLocations()[i].marker.setAnimation(null);
+	if (mapLocations()[i].marker.getAnimation() !== null) {
+		mapLocations()[i].marker.setAnimation(null);
 	} else {
-		myLocations()[i].marker.setAnimation(google.maps.Animation.BOUNCE);
+		mapLocations()[i].marker.setAnimation(google.maps.Animation.BOUNCE);
 	}
 }
 
+	// toggle with: mapLocations()[0].visible(true)
+	this.listClick = function(data) {
+		console.log('click for: ' + data.addr);
+//		console.log(data);
+//		data.visible(false);
+	}
 
-self.highLightOn = function() {
-	// grab numeric part of span id
-	var myIndex =  (event.target.id.match(/li(\d)/))[1];
-	$(event.target).addClass('hl');
-	toggleBounce(myIndex);
-}
+	this.highLightOn = function(data) {
+	data.select(true);
+	}
 
 
-self.highLightOff = function() {
-	// grab numeric part of span id
-	var myIndex =  (event.target.id.match(/li(\d)/))[1];
-	$(event.target).removeClass('hl');
-	toggleBounce(myIndex);
-}
+//self.highLightOn = function() {
+//	// grab numeric part of span id
+//	var myIndex =  (event.target.id.match(/li(\d)/))[1];
+//	$(event.target).addClass('hl');
+//	toggleBounce(myIndex);
+//}
 
-for ( index in myLocations() ) {
+
+	this.highLightOff = function(data) {
+		data.select(false);
+	}
+
+//self.highLightOff = function() {
+//	// grab numeric part of span id
+//	var myIndex =  (event.target.id.match(/li(\d)/))[1];
+//	$(event.target).removeClass('hl');
+//	toggleBounce(myIndex);
+//}
+
+for ( index in myLocations ) {
 //	console.log(myLocations()[index].name);
-	console.log(myLocations()[index].addr);
+	console.log(myLocations[index].addr);
 }
 
 
