@@ -17,12 +17,19 @@
 
 	<!-- inspired by http://opensoul.org/2011/06/23/live-search-with-knockoutjs/ -->
 	<div class="col-md-4 col-sm-4 search">
-		<form action="#">
-			<input	placeholder="Where I've lived ..."
+<!--		<form action=""> -->
+<!--			<label for"search1">Type Here</lable>	-->
+			<input	id="search1" placeholder="Where I've lived ..."
+				autofocus
+				list="myHomes"
 				type="search"
 				name="q"
 				data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off" >
-		</form>
+			<datalist id="myHomes" data-bind="foreach: mapLocations">
+				<option data-bind="text: name, visible: visible()"></option>
+			</datalist>
+<!--		<input type="button" value="push"> -->
+<!--		</form> -->
 
 	</div>		<!-- col-md-4 -->
 
@@ -56,23 +63,52 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5v06GI00VMZ07wHzXYTJdJKO
 </script>
 
 <script>
-var contentStrings = [
-	'Attending 2nd grade at John Marshall Elementary School',
-	'Attending 3rd grade at Robert M. Pyles Elementary School',
-	'Attending 5th grade at Robert M. Pyles Elementary School',
-	'Attending 8th grade at Trident Junior High School',
-	'Attending 12th grade at Loara High School',
-	'Freshman at CSUF'
-];
 
 var myLocations = [
-	{ name: 'Falmouth', addr: '2190 falmouth anaheim'},
-	{ name: 'Chanticleer', addr: '8602 chanticleer stanton'},
-	{ name: 'Lola', addr: '8891 lola anaheim'},
-	{ name: 'Ball', addr: '2011 w ball rd anaheim'},
-	{ name: 'Crone', addr: '1842 w crone rd anaheim'},
-	{ name: 'Tiara', addr: '1639 s tiara way anaheim'}
+	{ name: 'Falmouth',
+	addr: '2190 falmouth anaheim',
+	date: '1960-61',
+	grade: '2',
+	school: 'John Marshall Elementary',
+	interest: 'The Three Rs'
+	},
+	{ name: 'Chanticleer',
+	addr: '8602 chanticleer stanton',
+	date: '1961-62',
+	grade: '3',
+	school: 'Robert M. Pyles Elementary',
+	interest: 'Cub Scouts'
+	},
+	{ name: 'Lola',
+	addr: '8891 lola anaheim',
+	date: '1963-65',
+	grade: '4-7',
+	school: 'Robert M. Pyles Elementary',
+	interest: 'MichaelFaraday'
+	},
+	{ name: 'Ball',
+	addr: '2011 w ball rd anaheim',
+	date: '1966-68',
+	grade: '8-9',
+	school: 'Trident Junior High',
+	interest: 'Chemistry'
+	},
+	{ name: 'Crone',
+	addr: '1842 w crone rd anaheim',
+	date: '1968-70',
+	grade: '10- 12',
+	school: 'Loara High',
+	interest: 'Isaac Asimov'
+	},
+	{ name: 'Tiara',
+	addr: '1639 s tiara way anaheim',
+	date: '1970-71',
+	grade: 'freshman',
+	school: 'CSUF',
+	interest: 'Rostropovich'
+	}
 ];
+
 
 function MapMarker(locInfo) {
 	var self = this;
@@ -100,6 +136,7 @@ var myGeocoder;
 function initMap() {
 
 	myMap = new google.maps.Map(document.getElementById('map'), {
+		disableDefaultUI: true,
 		zoom: 13,
 		center: {lat: 33.83286, lng: -117.9587}
 		}
@@ -109,10 +146,12 @@ function initMap() {
 
 	drop();
 
+
 	// wait until markers have dropped
 	setTimeout(addListeners, 800);
 
 }
+
 
 function drop() {
 	clearMarkers();
@@ -137,7 +176,7 @@ function addMarker(location) {
 				title: results[0].formatted_address,
 				position: results[0].geometry.location,
 				animation: google.maps.Animation.DROP
-			})
+			});
 		}
 		else {
 //			alert(status);
@@ -149,8 +188,8 @@ function addMarker(location) {
 function addListeners() {
 
 	for ( var i in mapLocations() ) {
-		mapLocations()[i].info = new google.maps.InfoWindow({content: contentStrings[i]});
-//		mapLocations()[i].marker.addListener('click', (function(j){return function(){toggleBounce(j)}})(i));
+		mapLocations()[i].marker.addListener('click', (function(j){return function(){toggleBounce(j)}})(i));
+		mapLocations()[i].info = new google.maps.InfoWindow({content:  buildContent(i)});
 	}
 }
 
@@ -160,6 +199,19 @@ function toggleBounce(i) {
 	} else {
 		mapLocations()[i].marker.setAnimation(google.maps.Animation.BOUNCE);
 	}
+}
+
+var contentTemplate = '<p>I lived at %addr% while attending grade(s) ' +
+			'%grade% at %school% during %dates% with an interest in %interest%.</p>';
+
+function buildContent(i) {
+	var thisItem;
+	thisItem = contentTemplate.replace("%interest%", myLocations[i].interest);
+	thisItem = thisItem.replace("%dates%", myLocations[i].date);
+	thisItem = thisItem.replace("%school%", myLocations[i].school);
+	thisItem = thisItem.replace("%grade%", myLocations[i].grade);
+	thisItem = thisItem.replace("%addr%", mapLocations()[i].marker.title);
+	return thisItem;
 }
 
 function AppViewModel() {
@@ -174,24 +226,24 @@ function AppViewModel() {
 
 		closeInfos();
 
-                // create a regex with the value in the search box
-                regex.compile(value, 'i');
+		// create a regex with the value in the search box
+		regex.compile(value, 'i');
 
-                // check each name in mapLocations for a match
-                for (  var i in mapLocations() ) {
+		// check each name in mapLocations for a match
+		for (  var i in mapLocations() ) {
 			var marker = mapLocations()[i].marker;
-                        if ( regex.test(mapLocations()[i].name) ) {
-                                mapLocations()[i].visible(true);
+			if ( regex.test(mapLocations()[i].name) ) {
+				mapLocations()[i].visible(true);
 				marker.setMap(myMap);
-                        }
-                        else {
-                                mapLocations()[i].visible(false);
+			}
+			else {
+				mapLocations()[i].visible(false);
 				marker.setMap(null);
-                        }
-                }
-        }
+			}
+		}
+	}
 
-        self.query.subscribe(self.search);
+	self.query.subscribe(self.search);
 
 	// toggle with: mapLocations()[0].visible(true)
 	this.listClick = function(data) {
