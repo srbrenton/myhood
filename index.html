@@ -196,8 +196,10 @@ function addListeners() {
 function toggleBounce(i) {
 	if (mapLocations()[i].marker.getAnimation() !== null) {
 		mapLocations()[i].marker.setAnimation(null);
+		mapLocations()[i].info.close();
 	} else {
 		mapLocations()[i].marker.setAnimation(google.maps.Animation.BOUNCE);
+		mapLocations()[i].info.open(myMap, mapLocations()[i].marker);
 	}
 }
 
@@ -265,6 +267,7 @@ function AppViewModel() {
 	this.highLightOff = function(data) {
 		data.select(false);
 		data.bounce(false);
+		data.info.close();
 		data.marker.setAnimation(null);
 	}
 

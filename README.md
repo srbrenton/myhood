@@ -1,5 +1,14 @@
 P5-1: Neighborhood Map Project
 ==============================
+Map Behaviour
+------------
+* Clicking on a marker will start it bouncing and display an info window
+* Clicking on a marker while animated will close the info window and stop the animation
+* Closing the info window with an animated marked will require another click on the marker to stop the animation
+* Mousing over a street name will highlight the street name and animate its marker
+* Clicking the street name will stop the marker animation and display the info box
+* The info box closes when the mouse exits the street name
+
 Instructions for use and Interaction
 ------------------------------------
 
