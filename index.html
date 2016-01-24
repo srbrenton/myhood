@@ -63,6 +63,9 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5v06GI00VMZ07wHzXYTJdJKO
 </script>
 
 <script>
+/*
+ *	This array contains the source data the markers and info boxes
+ */
 
 var myLocations = [
 	{ name: 'Falmouth',
@@ -115,6 +118,11 @@ var myLocations = [
 	}
 ];
 
+/*
+ *	Prepare to fire of the AJAX Wikipedia requests
+ *	Save a 2D array of results for each interest in the myLocations array
+ */
+
 function wikiRequests() {
 
 	var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=%query%&format=json&callback=wikiCallback';
@@ -134,6 +142,10 @@ function wikiRequests() {
 		
 wikiRequests();
 
+/*
+ *	Define an object to facilitate KnockoutJS functionality
+ */
+
 function MapMarker(locInfo) {
 	var self = this;
 	self.name = locInfo.name;
@@ -145,6 +157,10 @@ function MapMarker(locInfo) {
 	self.bounce = ko.observable(false);
 }
 
+/*
+ *	Create an observableArray of MapMarkers populated with data from myLocations[]
+ */
+
 var mapLocations = ko.observableArray([
 	new MapMarker(myLocations[0]),
 	new MapMarker(myLocations[1]),
@@ -153,6 +169,10 @@ var mapLocations = ko.observableArray([
 	new MapMarker(myLocations[4]),
 	new MapMarker(myLocations[5])
 ]);
+
+/*
+ *	Create the map, markers, and info boxes
+ */
 
 var myMap;
 var myGeocoder;
@@ -168,16 +188,16 @@ function initMap() {
 
 	myGeocoder = new google.maps.Geocoder();
 
-	drop();
+	// create and drop the markers
+	dropMarkers();
 
 	// wait until markers have dropped
 	setTimeout(addListeners, 800);
 
 }
 
-
-function drop() {
-	clearMarkers();
+function dropMarkers() {
+//	clearMarkers();
 	for ( var i in mapLocations() ) {
 		addMarker(mapLocations()[i]);
 	}
@@ -190,6 +210,10 @@ function clearMarkers() {
 		}
 	}
 }
+
+/*
+ *	Use the Google Geocoder to get coordinates for each address and create the Markers
+ */
 
 function addMarker(location) {
 	myGeocoder.geocode({'address': location.addr},(function(loc){return function(results, status) {
@@ -207,25 +231,9 @@ function addMarker(location) {
 	}})(location));
 }
 
-// the markers have been dropped
-function addListeners() {
-
-	for ( var i in mapLocations() ) {
-		mapLocations()[i].marker.addListener('click', (function(j){return function(){toggleBounce(j)}})(i));
-		mapLocations()[i].info = new google.maps.InfoWindow({content:  buildContent(i)});
-	}
-}
-
-function toggleBounce(i) {
-	if (mapLocations()[i].marker.getAnimation() !== null) {
-		mapLocations()[i].marker.setAnimation(null);
-		mapLocations()[i].info.close();
-	} else {
-		mapLocations()[i].marker.setAnimation(google.maps.Animation.BOUNCE);
-		mapLocations()[i].info.open(myMap, mapLocations()[i].marker);
-	}
-}
-
+/*
+ * Here is a template and code to create the text for the info boxes
+ */
 var contentTemplate = '<p>I lived at %addr% while attending grade(s) ' +
 			'%grade% at %school% during %dates% with an interest in %interest%.</p>';
 
@@ -247,6 +255,37 @@ function buildContent(i) {
 	wikiInfo += '</ul>'
 	return thisItem + wikiInfo;
 }
+
+/*
+ *	The markers have been created and dropped, build and link the Info boxes
+ */
+
+function addListeners() {
+
+	for ( var i in mapLocations() ) {
+		mapLocations()[i].marker.addListener('click', (function(j){return function(){toggleBounce(j)}})(i));
+		mapLocations()[i].info = new google.maps.InfoWindow({content:  buildContent(i)});
+	}
+}
+
+/*
+ *	If marker is clicked start bouncing and show info box
+ *	Conversely, stop bouncing and hide the info box
+ */
+
+function toggleBounce(i) {
+	if (mapLocations()[i].marker.getAnimation() !== null) {
+		mapLocations()[i].marker.setAnimation(null);
+		mapLocations()[i].info.close();
+	} else {
+		mapLocations()[i].marker.setAnimation(google.maps.Animation.BOUNCE);
+		mapLocations()[i].info.open(myMap, mapLocations()[i].marker);
+	}
+}
+
+/*
+ * This must be the View Model
+ */
 
 function AppViewModel() {
 
