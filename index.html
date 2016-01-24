@@ -128,7 +128,7 @@ function wikiRequests() {
 						}}
 					)(i);
 		$.ajax(thisRequest);
-		console.log(thisRequest);
+//		console.log(thisRequest);
 	}
 }
 		
@@ -231,12 +231,21 @@ var contentTemplate = '<p>I lived at %addr% while attending grade(s) ' +
 
 function buildContent(i) {
 	var thisItem;
+	var wikiInfo;
 	thisItem = contentTemplate.replace("%interest%", myLocations[i].interest);
 	thisItem = thisItem.replace("%dates%", myLocations[i].date);
 	thisItem = thisItem.replace("%school%", myLocations[i].school);
 	thisItem = thisItem.replace("%grade%", myLocations[i].grade);
 	thisItem = thisItem.replace("%addr%", mapLocations()[i].marker.title);
-	return thisItem;
+	
+	wikiInfo = '<ul>';
+	for ( var entries = 0; entries < myLocations[i].wikiData[0].length; entries++ ) {
+		wikiInfo += '<li><a href="' + myLocations[i].wikiData[1][entries] + '">';
+		wikiInfo += myLocations[i].wikiData[0][entries] + '</a></li>';
+//		console.log(wikiInfo);
+	}
+	wikiInfo += '</ul>'
+	return thisItem + wikiInfo;
 }
 
 function AppViewModel() {
@@ -290,7 +299,7 @@ function AppViewModel() {
 	this.highLightOff = function(data) {
 		data.select(false);
 		data.bounce(false);
-		data.info.close();
+//		data.info.close();
 		data.marker.setAnimation(null);
 	}
 
