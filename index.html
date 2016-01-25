@@ -16,24 +16,30 @@
 	<div class="row">
 
 	<!-- inspired by http://opensoul.org/2011/06/23/live-search-with-knockoutjs/ -->
-	<div class="col-md-4 col-sm-4 search">
+	<div class="col-md-3 col-sm-3 search">
+		<p>Type part of a street name</p>
+
 <!--		<form action=""> -->
 <!--			<label for"search1">Type Here</lable>	-->
-			<input	id="search1" placeholder="Where I've lived ..."
+			<input	id="search1" placeholder="Places I've lived ..."
 				autofocus
-				list="myHomes"
 				type="search"
 				name="q"
 				data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off" >
+<!--
+			<input	id="search1" placeholder="Where I've lived ..."
+				list="myHomes"
 			<datalist id="myHomes" data-bind="foreach: mapLocations">
 				<option data-bind="text: name, visible: visible()"></option>
 			</datalist>
+-->
 <!--		<input type="button" value="push"> -->
 <!--		</form> -->
 
 	</div>		<!-- col-md-4 -->
 
-<div class="col-md-8 col-sm-8 search">
+<div class="col-md-9 col-sm-9 search">
+<p>These are the streets, mouse over or click on one of them</p>
 <ul class="nav nav-tabs"class="nav nav-tabs"  data-bind="foreach: mapLocations">
 	<li class="btn" data-bind="visible: visible()">
 	<span data-bind="
@@ -42,7 +48,7 @@
 		event: { mouseover: $parent.highLightOn, mouseout: $parent.highLightOff, click: $parent.listClick }
 	" ></span></li>
 </ul>
-</div>
+</div>	<!-- col-md-9 -->
 
 <div class="row">
 	<div class="col-md-12 col-sm-12">
@@ -63,6 +69,7 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5v06GI00VMZ07wHzXYTJdJKO
 </script>
 
 <script>
+
 /*
  *	This array contains the source data the markers and info boxes
  */
@@ -297,6 +304,10 @@ function AppViewModel() {
 
         self.search = function(value) {
 
+		var loopcount = mapLocations().length;
+		var visbits = loopcount;
+		var maxbits = loopcount;
+
 		closeInfos();
 
 		// create a regex with the value in the search box
@@ -306,15 +317,28 @@ function AppViewModel() {
 		for (  var i in mapLocations() ) {
 			var marker = mapLocations()[i].marker;
 			if ( regex.test(mapLocations()[i].name) ) {
+				visbits |= ( 1 << i);
 				mapLocations()[i].visible(true);
 				marker.setMap(myMap);
 			}
 			else {
+				visbits &= ~( 1 << i);
 				mapLocations()[i].visible(false);
 				marker.setMap(null);
 			}
 		}
-	}
+
+		var bitcount = countbits(visbits, maxbits);
+		if ( bitcount == 1) {
+			i = findbit(visbits, maxbits);
+			mapLocations()[i].marker.setAnimation(google.maps.Animation.BOUNCE);
+			mapLocations()[i].info.open(myMap, mapLocations()[i].marker);
+			// console.log('found bit: ' + i);
+			// console.log(mapLocations()[i].name);
+		}
+		// console.log('bitcount: ' + bitcount + ' visbits: ' + visbits.toString(8));
+}
+
 
 	self.query.subscribe(self.search);
 
@@ -338,8 +362,27 @@ function AppViewModel() {
 	this.highLightOff = function(data) {
 		data.select(false);
 		data.bounce(false);
-//		data.info.close();
+		// data.info.close();
 		data.marker.setAnimation(null);
+	}
+
+	// return the number of bits set in bits
+	function countbits(bits, maxbits) {
+		var bitcount = 0;
+		for ( var i = 0; i < maxbits; i++ ) {
+			bitcount += ( bits & ( 1 << i))? 1: 0;
+		}
+		return bitcount;
+	}
+
+	function findbit(bits, maxbits) {
+		for ( var i = 0; i < maxbits; i++ ) {
+			if ( bits & 1 ) {
+				break;
+			}
+			bits >>= 1;
+		}
+		return( i );
 	}
 
 	function closeInfos() {
@@ -348,9 +391,9 @@ function AppViewModel() {
 		}
 	}
 
-	for ( index in myLocations ) {
-		console.log(myLocations[index].addr);
-	}
+//	for ( index in myLocations ) {
+//		console.log(myLocations[index].addr);
+//	}
 
 }
 
