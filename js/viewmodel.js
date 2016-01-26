@@ -8,6 +8,12 @@ function AppViewModel() {
 	var regex = new RegExp();
 	var openInfo = null;
 
+	this.mapError = ko.observable();
+
+	if ( myMap == null ) {
+		this.mapError('<h5>Google Map failed to load, proceed at your own risk</h5>');
+	}
+
 	self.query = ko.observable('');
 
 	// the function associated with the search box
@@ -71,7 +77,7 @@ function AppViewModel() {
 	this.highLightOff = function(data) {
 		data.select(false);
 		data.bounce(false);
-		// data.info.close();
+		data.info.close();
 		data.marker.setAnimation(null);
 	}
 

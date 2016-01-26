@@ -28,7 +28,7 @@
 	</div>		<!-- col-md-4 -->
 
 <div class="col-md-9 col-sm-9 search">
-<p>These are the streets, mouse over or click on one of them</p>
+<p>These are the streets, mouse over and click on one of them</p>
 <ul class="nav nav-tabs"class="nav nav-tabs"  data-bind="foreach: mapLocations">
 	<li class="btn" data-bind="visible: visible()">
 	<span data-bind="
@@ -42,9 +42,10 @@
 <div class="row">
 	<div class="col-md-12 col-sm-12">
 		<div id="map">
+			<div data-bind="html: mapError"></div>
 		</div>			<!-- map -->
-	</div>				<!-- col-md-12 -->
-</div>					<!-- map row -->
+	</div>			<!-- col-md-12 -->
+</div>			<!-- map row -->
 
 </div>
 </div><!--container-->
@@ -53,13 +54,13 @@
 <script src="js/bootstrap.min.js"></script>
 <script src="js/knockout-3.2.0.js"></script>
 
-<script async defer
-src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5v06GI00VMZ07wHzXYTJdJKOy6HGM07Q&callback=initMap&libraries=places">
-</script>
-
 <script src="js/model.js"></script>
 <script src="js/myhood.js"></script>
 <script src="js/viewmodel.js"></script>
+
+<script async defer
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5v06GI00VMZ07wHzXYTJdJKOy6HGM07Q&callback=initMap&libraries=places">
+</script>
 
 </body>
 </html>

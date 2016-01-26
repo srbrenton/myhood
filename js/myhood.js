@@ -1,6 +1,7 @@
 /*
  *	Prepare to fire of the AJAX Wikipedia requests
  *	Save a 2D array of results for each interest in the myLocations array
+ *	myLocations[idx].wikiData will still be set to null if Wikipedia access fails
  */
 
 function wikiRequests() {
@@ -9,6 +10,9 @@ function wikiRequests() {
 	var thisRequest = { };
 
 	for ( var i in myLocations ) {
+
+		// if ( i == 2 ) { continue;  } // simulate failure to access wikipedia
+
 		thisRequest.url = wikiUrl.replace('%query%', myLocations[i].interest);
 		thisRequest.dataType = 'jsonp';
 		thisRequest.success = (function(idx){return function(response) {
@@ -16,7 +20,6 @@ function wikiRequests() {
 						}}
 					)(i);
 		$.ajax(thisRequest);
-//		console.log(thisRequest);
 	}
 }
 		
@@ -87,25 +90,39 @@ function addMarker(location) {
 /*
  * Here is a template and code to create the text for the info boxes
  */
-var contentTemplate = '<p>I lived at %addr% while attending grade(s) ' +
-			'%grade% at %school% during %dates% with an interest in %interest%.</p>';
+
+var contentTemplate = '<h6>Location Information</h6>' +
+		'<p>I lived at %addr% while attending grade(s) ' +
+		'%grade% at %school% during %dates% with an interest in %interest%.</p>';
 
 function buildContent(i) {
 	var thisItem;
 	var wikiInfo;
+	var wikiDataLength;
+
 	thisItem = contentTemplate.replace("%interest%", myLocations[i].interest);
 	thisItem = thisItem.replace("%dates%", myLocations[i].date);
 	thisItem = thisItem.replace("%school%", myLocations[i].school);
 	thisItem = thisItem.replace("%grade%", myLocations[i].grade);
 	thisItem = thisItem.replace("%addr%", mapLocations()[i].marker.title);
 	
-	wikiInfo = '<ul>';
-	for ( var entries = 0; entries < myLocations[i].wikiData[0].length; entries++ ) {
-		wikiInfo += '<li><a href="' + myLocations[i].wikiData[1][entries] + '">';
-		wikiInfo += myLocations[i].wikiData[0][entries] + '</a></li>';
-//		console.log(wikiInfo);
+	if ( myLocations[i].wikiData !== null ) {
+		wikiInfo = '<h6>Wikipedia Search Results for ' + myLocations[i].interest + '</h6>';
+		wikiInfo += '<ul>';
+		wikiDataLength = myLocations[i].wikiData[0].length;
+		if ( wikiDataLength == 0 ) {
+			wikiInfo += '<li>No Wikipedia matches found</li>';
+		}
+		for ( var entries = 0; entries < wikiDataLength; entries++ ) {
+			wikiInfo += '<li><a href="' + myLocations[i].wikiData[1][entries] + '">';
+			wikiInfo += myLocations[i].wikiData[0][entries] + '</a></li>';
+		}
+		wikiInfo += '</ul>';
 	}
-	wikiInfo += '</ul>'
+	else {
+		wikiInfo = '<p>Wikipedia access failed</p>';
+	}
+
 	return thisItem + wikiInfo;
 }
 

@@ -68,6 +68,6 @@ function MapMarker(locInfo) {
 	self.bounce = ko.observable(false);
 }
 
-var myMap;
+var myMap = null;
 var myGeocoder;
 
