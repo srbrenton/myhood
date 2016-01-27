@@ -10,7 +10,7 @@ function AppViewModel() {
 
 	this.mapError = ko.observable();
 
-	if ( myMap == null ) {
+	if ( myMap === null ) {
 		this.mapError('<h5>Google Map failed to load, proceed at your own risk</h5>');
 	}
 
@@ -53,7 +53,7 @@ function AppViewModel() {
 			// console.log(mapLocations()[i].name);
 		}
 		// console.log('bitcount: ' + bitcount + ' visbits: ' + visbits.toString(8));
-	}
+	};
 
 	self.query.subscribe(self.search);
 
@@ -66,20 +66,20 @@ function AppViewModel() {
 		data.marker.setAnimation(null);
 		// console.log(data);
 		// data.visible(false);
-	}
+	};
 
 	this.highLightOn = function(data) {
 		data.select(true);
 		data.bounce(true);
 		data.marker.setAnimation(google.maps.Animation.BOUNCE);
-	}
+	};
 
 	this.highLightOff = function(data) {
 		data.select(false);
 		data.bounce(false);
 		data.info.close();
 		data.marker.setAnimation(null);
-	}
+	};
 
 	// return the number of bits set in bits
 	function countbits(bits, maxbits) {

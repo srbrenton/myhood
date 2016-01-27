@@ -17,7 +17,7 @@ function wikiRequests() {
 		thisRequest.dataType = 'jsonp';
 		thisRequest.success = (function(idx){return function(response) {
 						myLocations[idx].wikiData = [response[1], response[3]];
-						}}
+						};}
 					)(i);
 		$.ajax(thisRequest);
 	}
@@ -84,7 +84,7 @@ function addMarker(location) {
 		else {
 //			alert(status);
 		}
-	}})(location));
+	};})(location));
 }
 
 /*
@@ -110,7 +110,7 @@ function buildContent(i) {
 		wikiInfo = '<h6>Wikipedia Search Results for ' + myLocations[i].interest + '</h6>';
 		wikiInfo += '<ul>';
 		wikiDataLength = myLocations[i].wikiData[0].length;
-		if ( wikiDataLength == 0 ) {
+		if ( wikiDataLength === 0 ) {
 			wikiInfo += '<li>No Wikipedia matches found</li>';
 		}
 		for ( var entries = 0; entries < wikiDataLength; entries++ ) {
@@ -133,7 +133,7 @@ function buildContent(i) {
 function addListeners() {
 
 	for ( var i in mapLocations() ) {
-		mapLocations()[i].marker.addListener('click', (function(j){return function(){toggleBounce(j)}})(i));
+		mapLocations()[i].marker.addListener('click', (function(j){return function(){toggleBounce(j);};})(i));
 		mapLocations()[i].info = new google.maps.InfoWindow({content:  buildContent(i)});
 	}
 }
