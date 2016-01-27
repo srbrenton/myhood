@@ -1,11 +1,39 @@
-html, body { height: 100%; margin: 0; padding: 0; }
+html, body {
+	height: 100%; 
+	margin: 0; 
+	padding: 0;
+}
 
 /* Responsive Web Design Fundamentals */
-img, embed, object, video { max-width: 100%; }
+img, embed, object, video {
+	max-width: 100%;
+}
 
-#map { height: 80%; }
+#searchdiv {
+	height: 8%;
+	width: 100%;
+	padding: 1%;
+}
 
-.search { padding: 15px }
+#mapdiv {
+	height: 92%;
+	width: 100%;
+	padding-bottom: 5%;
+}
 
-.hl { color:blue;background:pink; }
+#search, #map {
+	height: 100%;
+	margin-left: 5%;
+	margin-right: 5%;
+/*	background: #FFF5E8; */
+}
+
+.mytext {
+	padding-top: 5px;
+}
+
+.hl {
+	color:blue;
+	background:pink;
+}
 

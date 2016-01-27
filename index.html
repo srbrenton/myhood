@@ -13,33 +13,35 @@
 
 <body>
 <div class="container">
-	<div class="row">
+<div id="searchdiv" class="row">
 
+	<div id="search">
 	<!-- inspired by http://opensoul.org/2011/06/23/live-search-with-knockoutjs/ -->
-	<div class="col-md-3 col-sm-3 search">
-		<p>Type part of a street name</p>
+	<div class="col-md-3 col-sm-3">
+		<p class="mytext">Type part of a street name</p>
 
-			<input	id="search1" placeholder="Places I've lived ..."
-				autofocus
-				type="search"
-				name="q"
-				data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off" >
+		<input	id="search1" placeholder="Places I've lived ..."
+			autofocus
+			type="search"
+			name="q"
+			data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off" >
+	</div>	<!-- col-md-3 -->
 
-	</div>		<!-- col-md-4 -->
+	<div class="col-md-9 col-sm-9">
+		<p class="mytext">These are the streets, mouse over and click on one of them</p>
+		<ul "class="nav nav-tabs"  data-bind="foreach: mapLocations">
+		<li class="btn" data-bind="visible: visible()">
+		<span data-bind="
+			css: { hl: select() },
+			text: name,
+			event: { mouseover: $parent.highLightOn, mouseout: $parent.highLightOff, click: $parent.listClick }
+		" ></span></li>
+		</ul>
+		</div>	<!-- col-md-9 -->
+	</div>	<!-- search -->
+</div>	<!-- searchdiv -->
 
-<div class="col-md-9 col-sm-9 search">
-<p>These are the streets, mouse over and click on one of them</p>
-<ul class="nav nav-tabs"class="nav nav-tabs"  data-bind="foreach: mapLocations">
-	<li class="btn" data-bind="visible: visible()">
-	<span data-bind="
-		css: { hl: select() },
-		text: name,
-		event: { mouseover: $parent.highLightOn, mouseout: $parent.highLightOff, click: $parent.listClick }
-	" ></span></li>
-</ul>
-</div>	<!-- col-md-9 -->
-
-<div class="row">
+<div id="mapdiv" class="row">
 	<div class="col-md-12 col-sm-12">
 		<div id="map">
 			<div data-bind="html: mapError"></div>

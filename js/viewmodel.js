@@ -77,7 +77,7 @@ function AppViewModel() {
 	this.highLightOff = function(data) {
 		data.select(false);
 		data.bounce(false);
-		data.info.close();
+		//data.info.close();
 		data.marker.setAnimation(null);
 	};
 
