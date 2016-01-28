@@ -63,8 +63,8 @@ function MapMarker(locInfo) {
 	self.addr = locInfo.addr;
 	self.marker = null;
 	self.info = null;
-	self.select = ko.observable(false);
-	self.visible = ko.observable(true);
+	self.select = ko.observable(false);	// used to highlight <li> on mouseover
+	self.visible = ko.observable(true);	// used for visibility of <li>
 }
 
 var myMap = null;

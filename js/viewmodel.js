@@ -65,28 +65,23 @@ function AppViewModel() {
 		
 	}
 
-	// toggle with: mapLocations()[0].visible(true)
+	// the user clicked the street name <li>
+	// close any open info windows, turn off bounce, open info window
 	this.listClick = function(data) {
 		var dm = data.marker;
 		closeInfos();
 		data.marker.setAnimation(null);
 		data.info.open(myMap, dm );
-
-		// console.log(data);
-		// data.visible(false);
-		// console.log('click for: ' + data.addr);
 	};
 
 	this.highLightOn = function(data) {
 		data.marker.setAnimation(google.maps.Animation.BOUNCE);
 		data.select(true);
-//		data.bounce(true);
 	};
 
 	this.highLightOff = function(data) {
 		data.marker.setAnimation(null);
 		data.select(false);
-//		data.bounce(false);
 	};
 
 	// return the number of bits set in bits
@@ -111,7 +106,6 @@ function AppViewModel() {
 	function closeInfos() {
 		for (  var i in mapLocations() ) {
 			mapLocations()[i].info.close();
-//			mapLocations()[i].visible(true);
 		}
 	}
 

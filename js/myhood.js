@@ -153,7 +153,7 @@ function addListeners() {
 
 	for ( var i in mapLocations() ) {
 		mapLocations()[i].marker.addListener('click', (function(j){return function(){activateMarker(j);};})(i));
-		mapLocations()[i].info = new google.maps.InfoWindow({content:  buildContent(i)});
+		mapLocations()[i].info = new google.maps.InfoWindow({content:  buildContent(i), maxWidth: 400});
 		google.maps.event.addListener(mapLocations()[i].info, 'closeclick', function(){listEntriesVisible();});
 	}
 }
