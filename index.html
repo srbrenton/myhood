@@ -6,8 +6,8 @@
 
 <title>My Hood</title>
 
-<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="css/hood.css">
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel="stylesheet" href="css/hood.css">
 
 </head>
 
@@ -30,7 +30,7 @@
 
 	<div class="col-md-9 col-sm-9">
 		<p class="mytext">These are the streets, mouse over and click on one of them</p>
-		<ul "class="nav nav-tabs"  data-bind="foreach: mapLocations">
+		<ul class="nav nav-tabs"  data-bind="foreach: mapLocations">
 		<li class="btn myli" data-bind="visible: visible()">
 		<span data-bind="
 			css: { hl: select() },
@@ -50,7 +50,6 @@
 	</div>			<!-- col-md-12 -->
 </div>			<!-- map row -->
 
-</div>
 </div><!--container-->
 
 <script src="js/jQuery.js"></script>
