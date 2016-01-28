@@ -24,13 +24,13 @@
 			autofocus
 			type="search"
 			name="q"
-			data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off" >
+			data-bind="textInput: query, autocomplete="off" >
 	</div>	<!-- col-md-3 -->
 
 	<div class="col-md-9 col-sm-9">
 		<p class="mytext">These are the streets, mouse over and click on one of them</p>
 		<ul "class="nav nav-tabs"  data-bind="foreach: mapLocations">
-		<li class="btn" data-bind="visible: visible()">
+		<li class="btn myli" data-bind="visible: visible()">
 		<span data-bind="
 			css: { hl: select() },
 			text: name,

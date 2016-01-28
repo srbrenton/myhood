@@ -15,6 +15,10 @@ img, embed, object, video {
 	padding: 1%;
 }
 
+#info {
+	width: 100%;
+}
+
 #mapdiv {
 	height: 92%;
 	width: 100%;
@@ -25,9 +29,12 @@ img, embed, object, video {
 	height: 100%;
 	margin-left: 5%;
 	margin-right: 5%;
-/*	background: #FFF5E8; */
+	background: #FFF5E8;
 }
 
+.myli {
+	background: #EBF5FC;
+}
 .mytext {
 	padding-top: 5px;
 }
@@ -36,4 +43,3 @@ img, embed, object, video {
 	color:blue;
 	background:pink;
 }
-

@@ -7,6 +7,7 @@ function AppViewModel() {
 	var self = this;
 	var regex = new RegExp();
 	var openInfo = null;
+//	var numLocs = mapLocations().length;
 
 	this.mapError = ko.observable();
 
@@ -45,9 +46,11 @@ function AppViewModel() {
 		}
 
 		var bitcount = countbits(visbits, maxbits);
-		if ( bitcount == 1) {
+		if ( bitcount === 1) {
+//			console.log(self.query());
+//			self.query('');
 			i = findbit(visbits, maxbits);
-			mapLocations()[i].marker.setAnimation(google.maps.Animation.BOUNCE);
+//			mapLocations()[i].marker.setAnimation(google.maps.Animation.BOUNCE);
 			mapLocations()[i].info.open(myMap, mapLocations()[i].marker);
 			// console.log('found bit: ' + i);
 			// console.log(mapLocations()[i].name);
@@ -57,28 +60,33 @@ function AppViewModel() {
 
 	self.query.subscribe(self.search);
 
+	this.clearQuery = function() {
+		self.query('');
+		
+	}
+
 	// toggle with: mapLocations()[0].visible(true)
 	this.listClick = function(data) {
-		var marker = data.marker;
+		var dm = data.marker;
 		closeInfos();
-		// console.log('click for: ' + data.addr);
-		data.info.open(myMap, marker );
 		data.marker.setAnimation(null);
+		data.info.open(myMap, dm );
+
 		// console.log(data);
 		// data.visible(false);
+		// console.log('click for: ' + data.addr);
 	};
 
 	this.highLightOn = function(data) {
-		data.select(true);
-		data.bounce(true);
 		data.marker.setAnimation(google.maps.Animation.BOUNCE);
+		data.select(true);
+//		data.bounce(true);
 	};
 
 	this.highLightOff = function(data) {
-		data.select(false);
-		data.bounce(false);
-		//data.info.close();
 		data.marker.setAnimation(null);
+		data.select(false);
+//		data.bounce(false);
 	};
 
 	// return the number of bits set in bits
@@ -103,6 +111,7 @@ function AppViewModel() {
 	function closeInfos() {
 		for (  var i in mapLocations() ) {
 			mapLocations()[i].info.close();
+//			mapLocations()[i].visible(true);
 		}
 	}
 

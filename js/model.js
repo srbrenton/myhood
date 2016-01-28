@@ -65,7 +65,6 @@ function MapMarker(locInfo) {
 	self.info = null;
 	self.select = ko.observable(false);
 	self.visible = ko.observable(true);
-	self.bounce = ko.observable(false);
 }
 
 var myMap = null;

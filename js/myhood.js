@@ -72,6 +72,7 @@ function dropMarkers() {
  */
 
 function addMarker(location) {
+
 	myGeocoder.geocode({'address': location.addr},(function(loc){return function(results, status) {
 		if (status === google.maps.GeocoderStatus.OK) {
 			loc.marker = new google.maps.Marker({
@@ -92,7 +93,7 @@ function addMarker(location) {
  */
 
 var contentTemplate = '<h6>Location Information</h6>' +
-		'<p>I lived at %addr% while attending grade(s) ' +
+		'<p id="info">I lived at %addr% while attending grade(s) ' +
 		'%grade% at %school% during %dates% with an interest in %interest%.</p>';
 
 function buildContent(i) {
@@ -114,7 +115,7 @@ function buildContent(i) {
 			wikiInfo += '<li>No Wikipedia matches found</li>';
 		}
 		for ( var entries = 0; entries < wikiDataLength; entries++ ) {
-			wikiInfo += '<li><a href="' + myLocations[i].wikiData[1][entries] + '">';
+			wikiInfo += '<li><a href="' + myLocations[i].wikiData[1][entries] + '" target="_blank">';
 			wikiInfo += myLocations[i].wikiData[0][entries] + '</a></li>';
 		}
 		wikiInfo += '</ul>';
@@ -127,34 +128,53 @@ function buildContent(i) {
 }
 
 /*
- *	The markers have been created and dropped, build and link the Info boxes
+ *	'closeclick' handler for info windows
+ *	Make all the list items and map markers visible after closing
+ *	the info window associated with a successful search
+ */
+
+function listEntriesVisible() {
+
+	for (  var i in mapLocations() ) {
+		mapLocations()[i].visible(true);
+		if ( mapLocations()[i].marker.getMap() === null ) {
+			mapLocations()[i].marker.setMap(myMap);
+		}
+	}
+}
+
+/*
+ *	Add a 'click' listener for the map marker
+ *	Build an info window for each map marker
+ *	Add a 'closeclick' listener for each info window
  */
 
 function addListeners() {
 
 	for ( var i in mapLocations() ) {
-		mapLocations()[i].marker.addListener('click', (function(j){return function(){toggleBounce(j);};})(i));
+		mapLocations()[i].marker.addListener('click', (function(j){return function(){activateMarker(j);};})(i));
 		mapLocations()[i].info = new google.maps.InfoWindow({content:  buildContent(i)});
+		google.maps.event.addListener(mapLocations()[i].info, 'closeclick', function(){listEntriesVisible();});
 	}
 }
 
 /*
- *	If marker is clicked start bouncing and show info box
- *	Conversely, stop bouncing and hide the info box
+ *	Close any open info windows, start marker bouncing and show this info box
  */
 
-function toggleBounce(i) {
-	if (mapLocations()[i].marker.getAnimation() !== null) {
-		mapLocations()[i].marker.setAnimation(null);
-		mapLocations()[i].info.close();
-	} else {
-		mapLocations()[i].marker.setAnimation(google.maps.Animation.BOUNCE);
-		mapLocations()[i].info.open(myMap, mapLocations()[i].marker);
-	}
-}
+function activateMarker(i) {
 
-/*
-for ( index in myLocations ) {
-	console.log(myLocations[index].addr);
+	/* A kind Udacity reviewer told me I could turn off the bounce with a setTimeout()
+	 * A great improvement over the toggle bounce function I used from the Google Maps example
+	 */
+
+	for ( var j in mapLocations() ) {
+		mapLocations()[j].info.close();
+		mapLocations()[i].marker.setAnimation(null);
+	}
+
+	mapLocations()[i].marker.setAnimation(google.maps.Animation.BOUNCE);
+	mapLocations()[i].info.open(myMap, mapLocations()[i].marker);
+	setTimeout(function(){ mapLocations()[i].marker.setAnimation(null); }, 1250);
+
 }
-*/
