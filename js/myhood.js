@@ -23,7 +23,7 @@ function wikiRequests() {
 	}
 }
 		
-wikiRequests();
+//wikiRequests();
 
 /*
  *	Create an observableArray of MapMarkers populated with data from myLocations[]
@@ -128,13 +128,16 @@ function buildContent(i) {
 }
 
 /*
- *	'closeclick' handler for info windows
+ *	This is the 'closeclick' handler for info windows
+ *	
+ *	Call the view model to clear the contents of the search <input> element
  *	Make all the list items and map markers visible after closing
  *	the info window associated with a successful search
  */
 
 function listEntriesVisible() {
 
+	myViewModel.clearQuery();
 	for (  var i in mapLocations() ) {
 		mapLocations()[i].visible(true);
 		if ( mapLocations()[i].marker.getMap() === null ) {
@@ -178,3 +181,8 @@ function activateMarker(i) {
 	setTimeout(function(){ mapLocations()[i].marker.setAnimation(null); }, 1250);
 
 }
+
+wikiRequests();
+myViewModel = new AppViewModel();
+ko.applyBindings(myViewModel);
+

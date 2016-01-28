@@ -63,7 +63,7 @@ function AppViewModel() {
 	this.clearQuery = function() {
 		self.query('');
 		
-	}
+	};
 
 	// the user clicked the street name <li>
 	// close any open info windows, turn off bounce, open info window
@@ -111,4 +111,4 @@ function AppViewModel() {
 
 }
 
-ko.applyBindings(new AppViewModel());
+//ko.applyBindings(new AppViewModel());

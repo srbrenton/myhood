@@ -69,4 +69,5 @@ function MapMarker(locInfo) {
 
 var myMap = null;
 var myGeocoder;
+var myViewModel;
 
