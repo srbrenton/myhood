@@ -44,10 +44,10 @@ var mapLocations = ko.observableArray([
 
 function initMap() {
 
-	myMap = new google.maps.Map(document.getElementById('map'), {
+	myMap = new google.maps.Map(document.getElementById('my-map'), {
 		disableDefaultUI: true,
-		zoom: 13,
-		center: {lat: 33.83286, lng: -117.9587}
+		zoom: 12,
+		center: {lat: 33.777788, lng: -117.958982}
 		}
 	);
 
@@ -156,7 +156,7 @@ function addListeners() {
 
 	for ( var i in mapLocations() ) {
 		mapLocations()[i].marker.addListener('click', (function(j){return function(){activateMarker(j);};})(i));
-		mapLocations()[i].info = new google.maps.InfoWindow({content:  buildContent(i), maxWidth: 400});
+		mapLocations()[i].info = new google.maps.InfoWindow({content:  buildContent(i), maxWidth: 300});
 		google.maps.event.addListener(mapLocations()[i].info, 'closeclick', function(){listEntriesVisible();});
 	}
 }

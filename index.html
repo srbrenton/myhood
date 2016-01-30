@@ -1,54 +1,58 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
 
-<!--Responsive Web Design Fundamentals-->
-<meta name="viewport" content="width=device-width,initial-scale=1">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>My Hood</title>
+	<title>My Neighborhood</title>
 
-<link rel="stylesheet" href="css/bootstrap.min.css">
-<link rel="stylesheet" href="css/hood.css">
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/hood.css">
 
 </head>
 
 <body>
+
 <div class="container">
-<div id="searchdiv" class="row">
 
-	<div id="search">
-	<!-- inspired by http://opensoul.org/2011/06/23/live-search-with-knockoutjs/ -->
-	<div class="col-md-3 col-sm-3">
-		<p class="mytext">Type part of a street name</p>
+	<div class="row">
+		<div class="col-md-12 col-sm-12 col-xs-12 my-head text-center">
+		<h6>My Neighborhood Map</h6>
+		</div><!-- my-head -->
+	</div><!-- row -->
 
-		<input	id="search1" placeholder="Places I've lived ..."
-			autofocus
-			type="search"
-			name="q"
-			data-bind="textInput: query"
-			autocomplete="off" >
-	</div>	<!-- col-md-3 -->
-
-	<div class="col-md-9 col-sm-9">
-		<p class="mytext">These are the streets, mouse over and click on one of them</p>
-		<ul class="nav nav-tabs"  data-bind="foreach: mapLocations">
-		<li class="btn myli" data-bind="visible: visible()">
-		<span data-bind="
-			css: { hl: select() },
+	<div class="row">
+		<div class="col-md-12 col-sm-12 col-xs-12 my-list">
+		Click a street
+		<ul class="nav nav-tabs" data-bind="foreach: mapLocations">
+			<li class="btn my-li" data-bind="visible: visible()">
+			<span data-bind="
+			css: { hilite: select() },
 			text: name,
 			event: { mouseover: $parent.highLightOn, mouseout: $parent.highLightOff, click: $parent.listClick }
-		" ></span></li>
+			"></span></li>
 		</ul>
-		</div>	<!-- col-md-9 -->
-	</div>	<!-- search -->
-</div>	<!-- searchdiv -->
+		</div><!-- my-list -->
+	</div><!-- row -->
 
-<div id="mapdiv" class="row">
-	<div class="col-md-12 col-sm-12">
-		<div id="map">
-			<div data-bind="html: mapError"></div>
-		</div>			<!-- map -->
-	</div>			<!-- col-md-12 -->
-</div>			<!-- map row -->
+	<div class="row">
+		<div class="col-md-12 col-sm-12 col-xs-12 my-search">
+			Type a street
+			<input  placeholder="Places I've lived ..."
+			autofocus
+			type="search"
+			name="query"
+			data-bind="textInput: query"
+			autocomplete="off" >
+		</div><!-- my-search -->
+	</div><!-- row -->
+
+	<div class="row">
+		<div id="my-map" class="col-md-12 col-sm-12 col-xs-12">
+		</div><!-- my-map -->
+	</div><!-- row -->
 
 </div><!--container-->
 

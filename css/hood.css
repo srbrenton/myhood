@@ -1,45 +1,43 @@
-html, body {
-	height: 100%; 
-	margin: 0; 
+html,
+body {
+	height: 100%;
+	margin: 0;
 	padding: 0;
 }
 
-/* Responsive Web Design Fundamentals */
-img, embed, object, video {
-	max-width: 100%;
-}
-
-#searchdiv {
-	height: 11%;
-	width: 100%;
-	padding: 1%;
-}
-
-#info {
+.my-head {
+	/* pink */
+	background: #fcdad5;
 	width: 100%;
 }
 
-#mapdiv {
-	height: 89%;
+.my-list {
+	/* blue */
+	background: #d4ecfb;
 	width: 100%;
-	padding-bottom: 5%;
 }
 
-#search, #map {
-	height: 100%;
-	margin-left: 5%;
-	margin-right: 5%;
-	background: #FFF5E8;
+.my-search {
+	/* green */
+	background: #d5e9d7;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	width: 100%;
 }
 
-.myli {
-	background: #EBF5FC;
-}
-.mytext {
-	padding-top: 5px;
+#my-map {
+	/* blue */
+	background: #d4ecfb;
+	height: 600px;
+	width: 100%;
 }
 
-.hl {
+.my-li {
+	background: #ebf5fc;
+}
+
+/* Bootstrap didn't like hi-lite */
+.hilite {
 	color:blue;
 	background:pink;
 }
