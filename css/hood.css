@@ -17,6 +17,10 @@ body {
 	width: 100%;
 }
 
+.my-li {
+	background: #ebf5fc;
+}
+
 .my-search {
 	/* green */
 	background: #d5e9d7;
@@ -25,18 +29,14 @@ body {
 	width: 100%;
 }
 
-#my-map {
+.my-map {
 	/* blue */
 	background: #d4ecfb;
 	height: 600px;
 	width: 100%;
 }
 
-.my-li {
-	background: #ebf5fc;
-}
-
-/* Bootstrap didn't like hi-lite */
+/* Knockout didn't like the hypen in hi-lite */
 .hilite {
 	color:blue;
 	background:pink;

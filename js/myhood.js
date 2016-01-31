@@ -23,8 +23,6 @@ function wikiRequests() {
 	}
 }
 		
-//wikiRequests();
-
 /*
  *	Create an observableArray of MapMarkers populated with data from myLocations[]
  */
@@ -44,7 +42,7 @@ var mapLocations = ko.observableArray([
 
 function initMap() {
 
-	myMap = new google.maps.Map(document.getElementById('my-map'), {
+	myMap = new google.maps.Map(document.getElementById('map'), {
 		disableDefaultUI: true,
 		zoom: 12,
 		center: {lat: 33.777788, lng: -117.958982}
@@ -182,7 +180,21 @@ function activateMarker(i) {
 
 }
 
-wikiRequests();
-myViewModel = new AppViewModel();
-ko.applyBindings(myViewModel);
+/*
+ * Fire off the ajax Wikipedia queries
+ */
 
+wikiRequests();
+
+/* I've made myViewModel global so that I can respond to the Information Window
+ * 'closeclick' event by calling myViewModel.clearQuery() function
+ * in listEntriesVisible() a few lines back in this file
+ */
+
+/*
+ * Create the view model
+ */
+
+myViewModel = new AppViewModel();
+
+ko.applyBindings(myViewModel);
